@@ -2,6 +2,7 @@
 
 #include "TankAimingComponent.h"
 #include "GameFramework/Pawn.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/StaticMeshComponent.h"
 
 // Sets default values for this component's properties
@@ -39,11 +40,44 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UTankAimingComponent::AimAt(FVector worldSpace)
+void UTankAimingComponent::AimAt(FVector worldSpace, float launchSpeed)
 {
 
-	FString tankName = GetOwner()->GetName();
 
-	UE_LOG(LogTemp, Warning, TEXT("%s is aiming at %s from %s"), *tankName, *worldSpace.ToString(), *barrel->GetComponentLocation().ToString());
+	FVector outLaunchVelocity;
+	FVector startingLocation = barrel->GetSocketLocation(FName("Projectile"));
+
+	auto aimDirection = outLaunchVelocity.GetSafeNormal();
+
+	if (UGameplayStatics::SuggestProjectileVelocity(
+		this,
+		outLaunchVelocity,
+		startingLocation,
+		worldSpace,
+		launchSpeed,
+		false,
+		0,
+		0,
+		ESuggestProjVelocityTraceOption::DoNotTrace)) {
+
+
+		FString tankName = GetOwner()->GetName();
+
+		UE_LOG(LogTemp, Warning, TEXT("%s is aiming at %s from %s"), *tankName, *worldSpace.ToString(), *aimDirection.ToString());
+		MoveBarrel(aimDirection);
+	}
+	
+
 }
+
+void UTankAimingComponent::MoveBarrel(FVector aimDirection) {
+
+	FRotator barrelRotation = barrel->GetForwardVector().Rotation();
+
+	FRotator aimRotator = aimDirection.Rotation();
+
+	FRotator differenceRotator = barrelRotation - aimRotator;
+}
+
+
 
