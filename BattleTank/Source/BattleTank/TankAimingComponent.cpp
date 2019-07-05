@@ -3,6 +3,7 @@
 #include "TankAimingComponent.h"
 #include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
+#include "TankBarrel.h"
 #include "Components/StaticMeshComponent.h"
 
 // Sets default values for this component's properties
@@ -25,7 +26,7 @@ void UTankAimingComponent::BeginPlay()
 	
 }
 
-void UTankAimingComponent::setBarrelReference(UStaticMeshComponent * barrelToSet)
+void UTankAimingComponent::setBarrelReference(UTankBarrel * barrelToSet)
 {
 
 	barrel = barrelToSet;
@@ -77,6 +78,9 @@ void UTankAimingComponent::MoveBarrel(FVector aimDirection) {
 	FRotator aimRotator = aimDirection.Rotation();
 
 	FRotator differenceRotator = barrelRotation - aimRotator;
+
+
+	barrel->Elevate(5);
 }
 
 
