@@ -18,15 +18,17 @@ public:
 
 	void Elevate(float degrees);
 
+
 private: 
 
 	UPROPERTY(EditAnywhere)
-	float MaxDegreesPerSecond = 20.0f;
+	float MaxDegreesPerSecond = 5.0f;
 
 	UPROPERTY(EditAnywhere)
 	float MaxElevationDegrees = 20.0f;
 
 	UPROPERTY(EditAnywhere)
 	float MinElevationDegrees = 0.0f;
-	
+
+
 };
