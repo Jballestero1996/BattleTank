@@ -4,6 +4,7 @@
 #include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "TankBarrel.h"
+#include "Turret.h"
 #include "Components/StaticMeshComponent.h"
 
 // Sets default values for this component's properties
@@ -11,7 +12,7 @@ UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
 }
@@ -30,6 +31,11 @@ void UTankAimingComponent::setBarrelReference(UTankBarrel * barrelToSet)
 {
 
 	barrel = barrelToSet;
+}
+
+void UTankAimingComponent::setTurretReference(UTurret * turretToSet)
+{
+	turret = turretToSet;
 }
 
 
@@ -77,12 +83,18 @@ void UTankAimingComponent::MoveBarrel(FVector aimDirection) {
 
 	FRotator barrelRotation = barrel->GetForwardVector().Rotation();
 
+	FRotator turretRotation = turret->GetForwardVector().Rotation();
+
 	FRotator aimRotator = aimDirection.Rotation();
 
-	FRotator differenceRotator = aimRotator - barrelRotation;
+	FRotator barrelDifferenceRotator = aimRotator - barrelRotation;
+
+	FRotator turretDifferenceRotator = aimRotator - turretRotation;
 
 	//differenceRotator.Pitch
-	barrel->Elevate(differenceRotator.Pitch);
+	barrel->Elevate(barrelDifferenceRotator.Pitch);
+
+	turret->RotateTurret(turretDifferenceRotator.Yaw);
 }
 
 
